@@ -1,0 +1,53 @@
+{
+  "name": "@spicyapi/proxy",
+  "version": "0.1.1",
+  "description": "Server-side proxy for SpicyAPI: let browser, mobile and desktop apps call the API without ever holding an API key.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spicy-API/spicy-proxy.git"
+  },
+  "homepage": "https://spicyapi.ai",
+  "bugs": {
+    "url": "https://github.com/Spicy-API/spicy-proxy/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./nextjs": {
+      "types": "./dist/src/nextjs.d.ts",
+      "import": "./dist/src/nextjs.js"
+    },
+    "./express": {
+      "types": "./dist/src/express.d.ts",
+      "import": "./dist/src/express.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "26.4.0",
+    "prettier": "3.9.6",
+    "typescript": "5.9.3"
+  }
+}
