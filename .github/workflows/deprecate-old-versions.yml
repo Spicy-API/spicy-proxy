@@ -1,0 +1,40 @@
+name: Deprecate superseded versions
+
+# Manual only. Deprecation is visible to every consumer on install, so it is not
+# something a push should ever trigger by accident.
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Deprecation notice shown on install
+        required: true
+        default: Superseded - please upgrade to the latest release. The API is unchanged.
+
+permissions:
+  contents: read
+
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          registry-url: https://registry.npmjs.org
+
+      # Everything below the version currently in package.json. Deriving the
+      # boundary from the manifest rather than hard-coding it means this workflow
+      # stays correct after the next release instead of quietly deprecating the
+      # wrong range.
+      - name: Deprecate every version below the current one
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Deprecating $NAME@<$VERSION"
+          npm deprecate "$NAME@<$VERSION" "${{ inputs.message }}"
+          echo "--- resulting state ---"
+          npm view "$NAME" versions --json
