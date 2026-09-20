@@ -1,5 +1,8 @@
 name: Release to npm
 
+# Published through npm trusted publishing (OIDC): the identity comes from this workflow
+# running in this repository, so no long-lived token is stored anywhere. npm also attaches a
+# provenance attestation automatically, which a token-based publish does not get.
 on:
   workflow_dispatch:
 
@@ -19,6 +22,10 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
+      # Trusted publishing needs npm 11.5.1 or newer; Node 22 still ships npm 10.x, so the
+      # bundled CLI would fall back to looking for a token that is no longer there and fail with
+      # a bare 401 that says nothing about OIDC.
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
       - run: npm test
@@ -34,5 +41,3 @@ jobs:
             echo "Publishing $NAME@$VERSION..."
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

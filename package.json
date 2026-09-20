@@ -1,6 +1,6 @@
 {
   "name": "@spicyapi/proxy",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Server-side proxy for SpicyAPI: let browser, mobile and desktop apps call the API without ever holding an API key.",
   "type": "module",
   "license": "MIT",
